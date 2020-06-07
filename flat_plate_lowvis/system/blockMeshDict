@@ -1,0 +1,95 @@
+/*--------------------------------*- C++ -*----------------------------------*\
+| =========                 |                                                 |
+| \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox           |
+|  \\    /   O peration     | Version:  v1912                                 |
+|   \\  /    A nd           | Website:  www.openfoam.com                      |
+|    \\/     M anipulation  |                                                 |
+\*---------------------------------------------------------------------------*/
+FoamFile
+{
+    version     2.0;
+    format      ascii;
+    class       dictionary;
+    object      blockMeshDict;
+}
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
+scale   0.1;
+
+vertices
+(
+	// old points
+    (0 0 0)//point 0 
+    (1 0 0) //p1
+    (1 1 0)//p2
+    (0 1 0)//p3
+    (0 0 0.1)//p4
+    (1 0 0.1)//p5
+    (1 1 0.1)//p6
+    (0 1 0.1)//p7
+// here are the new points
+    (6 0 0) //p8
+    (6 1 0)//p9
+    (6 0 0.1)//p10
+    (6 1 0.1)//p11
+
+);
+
+blocks
+(
+    hex (0 1 2 3 4 5 6 7) (20 40 1) simpleGrading (0.2 20 1)// 1st block
+    hex (1 8 9 2 5 10 11 6) (100 40 1) simpleGrading (6 20 1) //2nd block
+);
+
+edges
+(
+);
+
+boundary
+(
+    zerogradientplances
+    {
+        type patch;
+        faces
+        (
+            (1 5 4 0) // bottom(x=0,1;y=0)
+	    (8 9 11 10)//x =2 plane outlet
+            (3 7 6 2) //top side:x =0 and x =1
+            (2 6 11 9)//top side:x =1 and x=2  
+        );
+    }
+
+    inlet
+    {
+        type patch;
+        faces
+        (
+            (0 4 7 3) //left
+        );
+    }
+    plate
+    {
+        type wall;
+        faces
+        (
+            (1 8 10 5) //x =1-2;y=0
+        );
+    }
+    frontAndBack
+    {
+        type empty;
+        faces
+        (
+            (0 3 2 1) //z coordinate = 0(low z) x =0 or 1
+            (4 5 6 7) //z coordinate = 0.1 (large z plane), x=0 or 1
+	    (1 2 9 8) //z  =0 
+	    (5 10 11 6)//z =1
+        );
+    }
+);
+
+mergePatchPairs
+(
+);
+
+// ************************************************************************* //
